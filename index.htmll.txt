@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barışma Oyunu</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #message {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #yes {
+            transition: all 0.3s;
+        }
+        #confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="message">Seni üzdüğüm için özür dilerim, barışalım mı?</div>
+    <button id="no">Hayır</button>
+    <button id="yes">Evet</button>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+        const noBtn = document.getElementById('no');
+        const yesBtn = document.getElementById('yes');
+        const message = document.getElementById('message');
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        noBtn.addEventListener('click', () => {
+            yesBtn.style.fontSize = (parseInt(window.getComputedStyle(yesBtn).fontSize) + 5) + 'px';
+        });
+
+        yesBtn.addEventListener('click', () => {
+            message.textContent = "Evet, biliyordum. Seni çok seviyorum ve asla üzmeyeceğim!";
+            startConfetti();
+        });
+
+        // Basit konfeti animasyonu
+        let confettis = [];
+        function startConfetti() {
+            for (let i = 0; i < 100; i++) {
+                confettis.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 10 + 2,
+                    color: `hsl(${Math.random()*360}, 100%, 50%)`,
+                    tilt: Math.random() * 10 - 10
+                });
+            }
+            requestAnimationFrame(drawConfetti);
+        }
+
+        function drawConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettis.forEach(c => {
+                ctx.beginPath();
+                ctx.moveTo(c.x + c.tilt, c.y);
+                ctx.lineTo(c.x + c.tilt + c.r, c.y + c.r);
+                ctx.strokeStyle = c.color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                c.y += c.d;
+                if (c.y > canvas.height) {
+                    c.y = -10;
+                    c.x = Math.random() * canvas.width;
+                }
+            });
+            requestAnimationFrame(drawConfetti);
+        }
+    </script>
+</body>
+</html>
